@@ -1,4 +1,4 @@
-class ListPerson {
+export class ListPerson {
     constructor() {
         this.persons = [];
     }
@@ -18,44 +18,19 @@ class ListPerson {
         }
     }
 
-    sortByName() {
-        this.persons.sort((a, b) => a.name.localeCompare(b.name));
+    findById(id) {
+        return this.list.find((person) => person.id === id);
+    }
+
+    sortByFullName(order) {
+        if (order === "asc") {
+            this.persons.sort((a, b) => a.fullName.localeCompare(b.fullName));
+        } else if (order === "desc") {
+            this.persons.sort((a, b) => b.fullName.localeCompare(a.fullName));
+        }
     }
 
     filterByType(type) {
         return this.persons.filter(person => person instanceof type);
-    }
-
-    renderRow(person) {
-        let row = "<tr>";
-        if (person instanceof Employee) {
-            row += `<td>${person.name}</td>
-            <td>${person.id}</td>
-            <td>${person.address}</td>
-            <td>${person.email}</td>
-            <td>${person.workDays}</td>
-            <td>${person.salary}</td>
-            <td></td>`;
-        } else if (person instanceof Student) {
-            row += `<td>${person.name}</td>
-            <td>${person.id}</td>
-            <td>${person.address}</td>
-            <td>${person.email}</td>
-            <td>${person.mathScore}</td>
-            <td>${person.phyScore}</td>
-            <td>${person.chemScore}</td>`;
-        } else if (person instanceof Customer) {
-            row += `<td>${person.name}</td>
-            <td>${person.id}</td>
-            <td>${person.address}</td>
-            <td>${person.email}</td>
-            <td></td>
-            <td></td>
-            <td>${person.companyName}</td>
-            <td>${person.billValue}</td>
-            <td>${person.rating}</td>`;
-        }
-        row += "</tr>";
-        return row;
     }
 }

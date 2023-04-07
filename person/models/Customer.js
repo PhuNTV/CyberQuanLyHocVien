@@ -1,8 +1,9 @@
-class Customer extends Person {
-    constructor(id, name, address, email, userType, companyName, billValue, rating) {
-        super(id, name, address, email, userType);
+import Person from "../models/Person";
+export class Customer extends Person {
+    constructor(id, name, address, email, companyName, bill, rating) {
+        super(id, name, address, email);
         this.companyName = companyName;
-        this.billValue = billValue;
+        this.bill = bill;
         this.rating = rating;
     }
 }
