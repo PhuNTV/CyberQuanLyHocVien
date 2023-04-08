@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Quản lý học viện</title>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap.min.css"
+            integrity="sha512-Ez0cGzNzHR1tYAv56860NLspgUGuQw16GiOOp/I2LuTmpSK9xDXlgJz3XN4cnpXWDmkNBKXR/VDMTCnAaEooxA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+            />
+
+        <link rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" />
+    </head>
+
+    <body class="bg-success bg-opacity-10">
+        <div>
+            <nav class="navbar navbar-expand-sm navbar-dark bg-success
+                justify-content-center ">
+                <a class="navbar-brand ms-5" href="#">QUẢN LÝ HỌC VIỆN</a>
+            </nav>
+            <br />
+            <!-- Tab panes -->
+            <div class="tab-content container bg-green">
+                <!--Danh sách sản phẩm -->
+                <div role="tabpanel" class="tab-pane in active" id="DanhSachHV">
+                    <div class="row d-flex justify-content-around mb-2">
+                        <div class="col-md-4 ms-2">
+                            <!-- BEGIN BUTTOM THÊM MỚI -->
+                            <button id="btnAddStudent" type="button" class="btn
+                                btn-success" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalStudent">Add Học
+                                Viên</button>
+                            <button id="btnAddTeacher" type="button" class="btn
+                                btn-success" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalTeacher">Add Giảng
+                                Viên</button>
+                            <button id="btnAddCustomer" type="button" class="btn
+                                btn-success" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalCustomer">Add
+                                Khách Hàng</button>
+                            <!-- END BUTTON THÊM MỚI -->
+                        </div>
+                        <div class="col-md-4">
+                            <div class="list d-flex justify-content-start">
+                                <select id="typePerson" class="form-select">
+                                    <option selected>Loại người dùng</option>
+                                    <option value="1">Học viên</option>
+                                    <option value="2">Giảng Viên</option>
+                                    <option value="3">Khách hàng</option>
+                                </select>
+                                <select id="arrangeName" class="form-select
+                                    ms-2">
+                                    <option selected>Sắp xếp</option>
+                                    <option value="1">A - Z</option>
+                                    <option value="2">Z - A</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-fix"></div>
+                    <div class="tblPerson" id="tblPerson">
+                        <table class="table table-bordered">
+                            <thead>
+                                <th>ID</th>
+                                <th>Tên</th>
+                                <th>Địa chỉ</th>
+                                <th>Email</th>
+                                <th>Loại</th>
+                            </thead>
+                            <tbody id="tableList"></tbody>
+                        </table>
+                    </div>
+                    <br />
+                </div>
+            </div>
+            <!-- Modal Student-->
+            <div class="modal fade" id="exampleModalStudent" tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title label-student"
+                                id="exampleModalLabel"></h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="inputList">
+                            <div class="form-group">
+                                <label>ID</label>
+                                <input id="studentId" class="form-control
+                                    form-controlad" placeholder="ID" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tên</label>
+                                <input id="studentName" class="form-control
+                                    form-controlad" placeholder="Name" />
+                            </div>
+                            <div class="form-group">
+                                <label>Địa chỉ</label>
+                                <input id="studentAddress" class="form-control
+                                    form-controlad" placeholder="Address" />
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input id="studentEmail" class="form-control
+                                    form-controlad" placeholder="Email" />
+                            </div>
+                            <div class="form-group">
+                                <label>Toán
+                                </label>
+                                <input id="math" class="form-control
+                                    form-controlad" placeholder="" />
+                            </div>
+                            <div class="form-group">
+                                <label>Lý
+                                </label>
+                                <input id="physics" class="form-control
+                                    form-controlad" placeholder="" />
+                            </div>
+                            <div class="form-group">
+                                <label>Hóa</label>
+                                <input id="chemistry" class="form-control
+                                    form-controlad" placeholder="" />
+                            </div>
+                        </div>
+                        <div class="modal-footer" id="modal-footer-S">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal -->
+            <!-- Modal Employee-->
+            <div class="modal fade" id="exampleModalTeacher" tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title label-teacher"
+                                id="exampleModalLabel"></h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>ID</label>
+                                <input id="teacherId" class="form-control
+                                    form-controlad" placeholder="ID" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tên</label>
+                                <input id="teacherName" class="form-control
+                                    form-controlad" placeholder="Name" />
+                            </div>
+                            <div class="form-group">
+                                <label>Địa chỉ</label>
+                                <input id="teacherAddress" class="form-control
+                                    form-controlad" placeholder="Address" />
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input id="teacherEmail" class="form-control
+                                    form-controlad" placeholder="Email" />
+                            </div>
+                            <div class="form-group">
+                                <label>Số ngày làm việc
+                                </label>
+                                <input id="days" class="form-control
+                                    form-controlad" placeholder="" />
+                            </div>
+                            <div class="form-group">
+                                <label>Lương hàng ngày
+                                </label>
+                                <input id="salaryUnit" class="form-control
+                                    form-controlad" placeholder="" />
+                            </div>
+                        </div>
+                        <div class="modal-footer" id="modal-footer-T">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal -->
+            <!-- Modal Customer-->
+            <div class="modal fade" id="exampleModalCustomer" tabindex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title label-customer"
+                                id="exampleModalLabel"></h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>ID</label>
+                                <input id="customerId" class="form-control
+                                    form-controlad" placeholder="ID" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tên</label>
+                                <input id="customerName" class="form-control
+                                    form-controlad" placeholder="Name" />
+                            </div>
+                            <div class="form-group">
+                                <label>Địa chỉ</label>
+                                <input id="customerAddress" class="form-control
+                                    form-controlad" placeholder="Address" />
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input id="customerEmail" class="form-control
+                                    form-controlad" placeholder="Email" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tên công ty
+                                </label>
+                                <input id="company" class="form-control
+                                    form-controlad" placeholder="" />
+                            </div>
+                            <div class="form-group">
+                                <label>Giá trị hóa đơn
+                                </label>
+                                <input id="billValue" class="form-control
+                                    form-controlad" placeholder="" />
+                            </div>
+                            <div class="form-group">
+                                <label>Đánh giá</label>
+                                <select id='inputRate' class='form-select w-50'>
+                                    <option valued>Lựa chọn</option>
+                                    <option value='Good'>Good</option>
+                                    <option value='Bad'>Bad</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer" id="modal-footer-C">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal -->
+
+            <div class="modal fade" id="detailsModal" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="detailsTitle"></h5>
+                            <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="detailsBody">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="container"></div>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"
+            integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/js/bootstrap.min.js"
+            integrity="sha512-EKWWs1ZcA2ZY9lbLISPz8aGR2+L7JVYqBAYTq5AXgBkSjRSuQEGqWx8R1zAX16KdXPaCjOCaKE8MCpU0wcHlHA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script type="module" src="./controllers/main.js"></script>
+
+    </body>
+
+</html>
