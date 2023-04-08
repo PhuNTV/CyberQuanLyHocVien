@@ -5,10 +5,8 @@ export default class Student extends Person {
     this.math = math;
     this.physics = physics;
     this.chemistry = chemistry;
-    this.average = 0;
-    this.calculateAverage = () => {
-      this.average = (this.math + this.physics + this.chemistry) / 3;
-    }
+
   }
+  calculateAverage = () => (this.math + this.physics + this.chemistry) / 3;
 
 }

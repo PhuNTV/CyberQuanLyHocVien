@@ -2,13 +2,37 @@
 import Student from "/models/Student.js";
 import Teacher from "/models/Teacher.js";
 import Customer from "/models/Customer.js";
+// import Validation from "./Validation.js";
 
 let personList = getLocalStorage();
-renderPerson(personList);
+
 // DOM
 function getElement(selector) {
     return document.querySelector(selector);
 }
+
+// Render
+let renderPerson = (personList) => {
+    let html = personList.reduce((result, person) => {
+        return (result += `
+        <tr>
+        <td>${person.id}</td>
+        <td>${person.name}</td>
+        <td>${person.address}</td>
+        <td>${person.email}</td>
+        <td>${person.constructor.name}</td>        
+        <td>
+            <button type="button" class="btn btn-success" onclick="editPerson('${person.id}')">Edit</button>
+            <button class='btn btn-danger' onclick="deletePerson('${person.id}')">Delete</button>
+            <button class='btn btn-warning' onclick="showInfo('${person.id}')" data-bs-toggle="modal" data-bs-target="#detailsModal">Show Info</button>
+        </td>
+    </tr>
+        `
+        );
+    }, "");
+    getElement('#tableList').innerHTML = html;
+}
+renderPerson(personList);
 
 // Add Student 
 window.createStudent = () => {
@@ -20,7 +44,6 @@ window.createStudent = () => {
     let physics = Number(getElement("#physics").value);
     let chemistry = Number(getElement("#chemistry").value);
     const student = new Student(id, name, address, email, Number(math), Number(physics), Number(chemistry));
-    student.calculateAverageScore();
     let index = personList.findIndex(person => person.id === id);
     if (index === -1) {
         personList.push(student);
@@ -48,7 +71,6 @@ window.createTeacher = () => {
     let days = Number(getElement("#days").value);
     let salaryUnit = Number(getElement("#salaryUnit").value);
     const teacher = new Teacher(id, name, address, email, Number(days), Number(salaryUnit));
-    teacher.calculateSalary();
     let index = personList.findIndex(person => person.id === id)
     if (index === -1) {
         personList.push(teacher);
@@ -74,7 +96,7 @@ window.createCustomer = () => {
     let address = getElement("#customerAddress").value;
     let email = getElement("#customerEmail").value;
     let company = getElement("#company").value;
-    let bill = getElement("#billValue").value;
+    let bill = Number(getElement("#billValue").value);
     let rate = getElement("#inputRate").value;
     switch (rate) {
         case 'Good': {
@@ -148,7 +170,7 @@ window.editPerson = (personId) => {
             getElement("#salaryUnit").value = person.salaryUnit;
             getElement("#teacherId").disabled = true;
             getElement(".label-teacher").innerHTML = "EDIT Teacher";
-            getElement("#modal-footer-E").innerHTML = `
+            getElement("#modal-footer-T").innerHTML = `
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateTeacher('${person.id}')">Cập nhật</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
           `;
@@ -184,6 +206,7 @@ window.updateStudent = () => {
     let physics = Number(getElement("#physics").value);
     let chemistry = Number(getElement("#chemistry").value);
     const student = new Student(id, name, address, email, Number(math), Number(physics), Number(chemistry));
+    student.calculateAverage;
     let index = personList.findIndex((student) => {
         return student.id === id;
     });
@@ -241,48 +264,112 @@ window.updateCustomer = () => {
     resetCustomer();
 }
 
-// const sortNames = (order) => {
-//   const namesList = document.querySelectorAll('.name'); // Lấy danh sách tên cần sắp xếp
-//   const sortedNames = Array.from(namesList).sort((a, b) => {
-//     const nameA = a.textContent.trim().split(' '); // Tách tên thành 2 phần họ và tên đệm
-//     const nameB = b.textContent.trim().split(' '); // Tách tên thành 2 phần họ và tên đệm
-//     const lastNameA = nameA[nameA.length - 1]; // Lấy phần tên cuối cùng của tên A
-//     const lastNameB = nameB[nameB.length - 1]; // Lấy phần tên cuối cùng của tên B
+// tạo hàm sắp xếp 
 
-//     if (order === 'asc') { // Sắp xếp tăng dần
-//       if (lastNameA < lastNameB) return -1;
-//       if (lastNameA > lastNameB) return 1;
-//       if (lastNameA === lastNameB) {
-//         if (nameA[0] < nameB[0]) return -1;
-//         if (nameA[0] > nameB[0]) return 1;
-//         return 0;
-//       }
-//     } else if (order === 'desc') { // Sắp xếp giảm dần
-//       if (lastNameA > lastNameB) return -1;
-//       if (lastNameA < lastNameB) return 1;
-//       if (lastNameA === lastNameB) {
-//         if (nameA[0] > nameB[0]) return -1;
-//         if (nameA[0] < nameB[0]) return 1;
-//         return 0;
-//       }
-//     }
-//   });
 
-//   // Thêm lại các phần tử đã sắp xếp vào danh sách
-//   const parent = namesList[0].parentNode;
-//   parent.innerHTML = '';
-//   sortedNames.forEach((name) => parent.appendChild(name));
-// };
+const sortPersonList = () => {
+    let selectElement = getElement("#arrangeName");
+    let selectedValue = selectElement.value;
 
-// const arrangeNameSelect = document.getElementById('arrangeName'); // Lấy select
-// arrangeNameSelect.addEventListener('change', (event) => {
-//   const order = event.target.value; // Lấy giá trị của option được chọn
-//   sortNames(order); // Sắp xếp danh sách theo thứ tự họ tên
-// });
+    switch (selectedValue) {
+        case "1":
+            sortByFirstNameAZ(personList);
+            break;
+        case "2":
+            sortByFirstNameZA(personList);
+            break;
+        default:
+            break;
+    }
+    renderPerson(personList);
+};
+
+let selectElement = getElement("#arrangeName");
+selectElement.addEventListener("click", sortPersonList);
+
+
+const sortByFirstNameAZ = (list) => {
+    return list.sort((a, b) => {
+        let nameA = a.name.toLowerCase();
+        let nameB = b.name.toLowerCase();
+
+        if (nameA < nameB) {
+            return -1;
+        }
+
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        return 0;
+    });
+};
+
+
+const sortByFirstNameZA = (list) => {
+    return list.sort((a, b) => {
+        let nameA = a.name.toLowerCase();
+        let nameB = b.name.toLowerCase();
+
+        if (nameA < nameB) {
+            return 1;
+        }
+
+        if (nameA > nameB) {
+            return -1;
+        }
+
+        return 0;
+    });
+};
+
+//lọc danh sách theo type
+
+const filterPerson = (userType) => {
+    let filteredList = [];
+    switch (userType) {
+        case "1":
+            filteredList = personList.filter((person) => person instanceof Student);
+            break;
+        case "2":
+            filteredList = personList.filter((person) => person instanceof Teacher);
+            break;
+        case "3":
+            filteredList = personList.filter((person) => person instanceof Customer);
+            break;
+        default: filteredList = personList;
+            break;
+    }
+    return filteredList;
+};
+
+const userTypeSelect = getElement("#typePerson");
+
+userTypeSelect.onchange = () => {
+    const userType = userTypeSelect.value;
+    const filteredList = filterPerson(userType);
+    renderPerson(filteredList);
+};
+
+
 
 // Show chi tiết Học viên
 window.showInfo = (personId) => {
     let person = personList.find(person => person.id === personId);
+
+    let average = () => {
+        if (person instanceof Student) {
+            return person.calculateAverage();
+        }
+    }
+
+    let salary = () => {
+        if (person instanceof Teacher) {
+            return person.calculateSalary();
+        }
+    }
+
+
     getElement("#detailsTitle").innerHTML = person.constructor.name;
     let html = `
     <label class='fw-bold'>ID: </label>
@@ -304,7 +391,7 @@ window.showInfo = (personId) => {
             <label class='fw-bold'>Chemistry: </label>
             <span>${person.chemistry}</span><br>
             <label class='fw-bold'>Average score: </label>
-            <span>${person.average}</span>
+            <span>${average().toFixed(2)}</span>
             `
         }
             break;
@@ -315,7 +402,7 @@ window.showInfo = (personId) => {
             <label class='fw-bold'>Salary day: </label>
             <span>${new Intl.NumberFormat('vn-VN').format(person.salaryUnit)}VND</span><br>
             <label class='fw-bold'>Total salary: </label>
-            <span>${new Intl.NumberFormat('vn-VN').format(person.salary)}VND</span>
+            <span>${new Intl.NumberFormat('vn-VN').format(salary())}VND</span>
             `
         }
             break;
@@ -334,7 +421,7 @@ window.showInfo = (personId) => {
 }
 
 // Reset Học viên
-function resetStudent() {
+let resetStudent = () => {
     getElement("#studentId").value = "";
     getElement("#studentName").value = "";
     getElement("#studentAddress").value = "";
@@ -344,7 +431,7 @@ function resetStudent() {
     getElement("#chemistry").value = "";
 }
 
-function resetTeacher() {
+let resetTeacher = () => {
     getElement("#teacherId").value = "";
     getElement("#teacherName").value = "";
     getElement("#teacherAddress").value = "";
@@ -353,7 +440,7 @@ function resetTeacher() {
     getElement("#salaryUnit").value = "";
 }
 
-function resetCustomer() {
+let resetCustomer = () => {
     getElement("#customerId").value = "";
     getElement("#customerName").value = "";
     getElement("#customerAddress").value = "";
@@ -363,27 +450,7 @@ function resetCustomer() {
     getElement("#inputRate").value = "";
 }
 
-// Render
-function renderPerson(personList) {
-    let html = personList.reduce((result, person) => {
-        return (result += `
-        <tr>
-        <td>${person.id}</td>
-        <td>${person.name}</td>
-        <td>${person.address}</td>
-        <td>${person.email}</td>
-        <td>${person.constructor.name}</td>        
-        <td>
-            <button type="button" class="btn btn-success" onclick="editPerson('${person.id}')">Edit</button>
-            <button class='btn btn-danger' onclick="deletePerson('${person.id}')">Delete</button>
-            <button class='btn btn-warning' onclick="showInfo('${person.id}')" data-bs-toggle="modal" data-bs-target="#detailsModal">Show Info</button>
-        </td>
-    </tr>
-        `
-        );
-    }, "");
-    getElement('#tableList').innerHTML = html;
-}
+
 
 // Validation
 
