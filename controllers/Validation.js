@@ -1,5 +1,5 @@
-Validation = () => {
-    this.checkEmpty = (valueInput, spanID, message) => {
+export default class Validation {
+    static checkEmpty = (valueInput, spanID, message) => {
         if (valueInput == "") {
             document.getElementById(spanID).style.display = "block";
             document.getElementById(spanID).innerHTML = message;
@@ -11,7 +11,7 @@ Validation = () => {
         return true
     }
 
-    this.checkIdExist = function (valueInput, spanID, message, empArray) {
+    static checkIdExist = function (valueInput, spanID, message, empArray) {
 
         var isExist = false;
 
@@ -32,7 +32,7 @@ Validation = () => {
 
     }
 
-    this.checkName = (valueInput, spanID, message) => {
+    static checkName = (valueInput, spanID, message) => {
         var pattern = /^[a-z A-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹý\\s]+$/
 
         if (valueInput.match(pattern)) {
@@ -46,10 +46,9 @@ Validation = () => {
         return false
     }
 
-    this.checkScore = (valueInput, spanID, message) => {
-        var pattern = /^[a-z A-Z_ÀÁÂÃÈÉÊẾÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹý\\s]+$/
+    static checkScore = (valueInput, spanID, message) => {
 
-        if (valueInput.match(pattern)) {
+        if (valueInput >= 0 && valueInput <= 10) {
             document.getElementById(spanID).style.display = "none";
             document.getElementById(spanID).innerHTML = "";
             return true
@@ -60,7 +59,7 @@ Validation = () => {
         return false
     }
 
-    this.checkEmail = (valueInput, spanID, message) => {
+    static checkEmail = (valueInput, spanID, message) => {
         var patternString = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if (valueInput.match(patternString)) {
             document.getElementById(spanID).style.display = "none";
@@ -74,7 +73,7 @@ Validation = () => {
 
     }
 
-    this.checkDailySalary = function (valueInput, spanID, message) {
+    static checkDailySalary = (valueInput, spanID, message) => {
 
         if (valueInput > 0) {
             document.getElementById(spanID).style.display = "none";
@@ -87,7 +86,20 @@ Validation = () => {
         return false
     }
 
-    this.checkSelect = (selectPosition, spanAcc, message) => {
+    static checkBill = (valueInput, spanID, message) => {
+
+        if (valueInput > 0) {
+            document.getElementById(spanID).style.display = "none";
+            document.getElementById(spanID).innerHTML = "";
+            return true
+        }
+
+        document.getElementById(spanID).style.display = "block";
+        document.getElementById(spanID).innerHTML = message;
+        return false
+    }
+
+    static checkSelect = (selectPosition, spanAcc, message) => {
         var indexOption = document.getElementById(selectPosition).selectedIndex;
 
         if (indexOption !== 0) {
@@ -101,9 +113,9 @@ Validation = () => {
         return false
     }
 
-    this.checkDays = (valueInput, spanID, message) => {
+    static checkDays = (valueInput, spanID, message) => {
 
-        if (valueInput >= 0 && valueInput <= 30) {
+        if (valueInput > 0 && valueInput <= 30) {
             document.getElementById(spanID).style.display = "none";
             document.getElementById(spanID).innerHTML = "";
             return true;

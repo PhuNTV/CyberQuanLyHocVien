@@ -1,13 +1,13 @@
 
-import Student from "/models/Student.js";
-import Teacher from "/models/Teacher.js";
-import Customer from "/models/Customer.js";
-// import Validation from "./Validation.js";
+import Student from "../models/Student.js";
+import Teacher from "../models/Teacher.js";
+import Customer from "../models/Customer.js";
+import Validation from "./Validation.js";
 
 let personList = getLocalStorage();
 
 // DOM
-function getElement(selector) {
+const getElement = (selector) => {
     return document.querySelector(selector);
 }
 
@@ -34,7 +34,7 @@ let renderPerson = (personList) => {
 }
 renderPerson(personList);
 
-// Add Student 
+// Add Student
 window.createStudent = () => {
     let id = getElement("#studentId").value;
     let name = getElement("#studentName").value;
@@ -43,24 +43,38 @@ window.createStudent = () => {
     let math = Number(getElement("#math").value);
     let physics = Number(getElement("#physics").value);
     let chemistry = Number(getElement("#chemistry").value);
-    const student = new Student(id, name, address, email, Number(math), Number(physics), Number(chemistry));
-    let index = personList.findIndex(person => person.id === id);
-    if (index === -1) {
+
+    let isValid = true;
+
+    isValid &= Validation.checkEmpty(id, "tbIdStudent", "Thông tin không được để trống!") && Validation.checkIdExist(id, "tbIdStudent", "ID đã tồn tại", personList);
+    isValid &= Validation.checkEmpty(name, "tbNameStudent", "Thông tin không được để trống!") && Validation.checkName(name, "tbNameStudent", "Thông tin không hợp lệ!");
+    isValid &= Validation.checkEmpty(address, "tbAdressStudent", "Thông tin không được để trống!");
+    isValid &= Validation.checkEmpty(email, "tbMailStudent", "Thông tin không được để trống!") && Validation.checkEmail(email, "tbMailStudent", "Thông tin email chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(math, "tbMathStudent", "Thông tin không được để trống!") && Validation.checkScore(math, "tbMathStudent", "Điểm chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(physics, "tbPhysicsStudent", "Thông tin không được để trống!") && Validation.checkScore(physics, "tbPhysicsStudent", "Điểm chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(chemistry, "tbChemistryStudent", "Thông tin không được để trống!") && Validation.checkScore(chemistry, "tbChemistryStudent", "Điểm chưa hợp lệ!");
+
+    if (isValid) {
+        const student = new Student(id, name, address, email, Number(math), Number(physics), Number(chemistry));
         personList.push(student);
-    } else {
-        personList[index] = student;
+        setLocalStorage();
+        renderPerson(personList);
+        resetStudent();
+        alert("Thêm Thành Công");
+        document.querySelector("#exampleModalStudent .btn-close").click();
     }
-    setLocalStorage();
-    renderPerson(personList);
+
 }
 getElement("#btnAddStudent").onclick = () => {
     getElement("#studentId").disabled = false;
     getElement(".label-student").innerHTML = "Thêm Học Viên";
     getElement("#modal-footer-S").innerHTML = `
-  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="createStudent()">Thêm</button>
+  <button type="button" class="btn btn-primary" onclick="createStudent()">Thêm</button>
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
   `;
+
 }
+
 
 // Add teacher
 window.createTeacher = () => {
@@ -70,21 +84,32 @@ window.createTeacher = () => {
     let email = getElement("#teacherEmail").value;
     let days = Number(getElement("#days").value);
     let salaryUnit = Number(getElement("#salaryUnit").value);
-    const teacher = new Teacher(id, name, address, email, Number(days), Number(salaryUnit));
-    let index = personList.findIndex(person => person.id === id)
-    if (index === -1) {
+
+    let isValid = true;
+
+    isValid &= Validation.checkEmpty(id, "tbIdTeacher", "Thông tin không được để trống!") && Validation.checkIdExist(id, "tbIdTeacher", "ID đã tồn tại", personList);
+    isValid &= Validation.checkEmpty(name, "tbNameTeacher", "Thông tin không được để trống!") && Validation.checkName(name, "tbNameTeacher", "Thông tin không hợp lệ!");
+    isValid &= Validation.checkEmpty(address, "tbAdressTeacher", "Thông tin không được để trống!");
+    isValid &= Validation.checkEmpty(email, "tbMailTeacher", "Thông tin không được để trống!") && Validation.checkEmail(email, "tbMailTeacher", "Thông tin email chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(days, "tbDays", "Thông tin không được để trống!") && Validation.checkDays(days, "tbDays", "Ngày chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(salaryUnit, "tbSalaryUnit", "Thông tin không được để trống!") && Validation.checkDailySalary(salaryUnit, "tbSalaryUnit", "Lương chưa chưa hợp lệ!");
+
+    if (isValid) {
+        const teacher = new Teacher(id, name, address, email, Number(days), Number(salaryUnit));
         personList.push(teacher);
-    } else {
-        personList[index] = teacher;
+        setLocalStorage();
+        renderPerson(personList);
+        resetTeacher();
+        alert("Thêm Thành Công");
+        document.querySelector("#exampleModalTeacher .btn-close").click();
     }
-    setLocalStorage();
-    renderPerson(personList);
+
 }
 getElement("#btnAddTeacher").onclick = () => {
     getElement("#teacherId").disabled = false;
     getElement(".label-teacher").innerHTML = "Thêm Giảng Viên";
     getElement("#modal-footer-T").innerHTML = `
-  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="createTeacher()">Thêm</button>
+  <button type="button" class="btn btn-primary" onclick="createTeacher()">Thêm</button>
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
   `;
 }
@@ -112,21 +137,33 @@ window.createCustomer = () => {
         }
     }
 
-    const customer = new Customer(id, name, address, email, company, bill, rate);
-    let index = personList.findIndex(person => person.id === id)
-    if (index === -1) {
+    let isValid = true;
+
+    isValid &= Validation.checkEmpty(id, "tbIdCustomer", "Thông tin không được để trống!") && Validation.checkIdExist(id, "tbIdCustomer", "ID đã tồn tại", personList);
+    isValid &= Validation.checkEmpty(name, "tbNameCustomer", "Thông tin không được để trống!") && Validation.checkName(name, "tbNameCustomer", "Thông tin không hợp lệ!");
+    isValid &= Validation.checkEmpty(address, "tbAdressCustomer", "Thông tin không được để trống!");
+    isValid &= Validation.checkEmpty(email, "tbMailCustomer", "Thông tin không được để trống!") && Validation.checkEmail(email, "tbMailCustomer", "Thông tin email chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(company, "tbCompanyName", "Thông tin không được để trống!");
+    isValid &= Validation.checkEmpty(bill, "tbBill", "Thông tin không được để trống!") && Validation.checkBill(bill, "tbBill", "Giá trị chưa chưa hợp lệ!");
+    isValid &= Validation.checkSelect("inputRate", "tbRate", "Thông tin chưa hợp lệ!");
+
+    if (isValid) {
+        const customer = new Customer(id, name, address, email, company, bill, rate);
         personList.push(customer);
-    } else {
-        personList[index] = customer;
+        setLocalStorage();
+        renderPerson(personList);
+        resetTeacher();
+        alert("Thêm Thành Công");
+        document.querySelector("#exampleModalCustomer .btn-close").click();
     }
-    setLocalStorage();
-    renderPerson(personList);
+
+
 }
 getElement("#btnAddCustomer").onclick = () => {
     getElement("#customerId").disabled = false;
     getElement(".label-customer").innerHTML = "Thêm Khách Hàng";
     getElement("#modal-footer-C").innerHTML = `
-  <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="createCustomer()">Thêm</button>
+  <button type="button" class="btn btn-primary" onclick="createCustomer()">Thêm</button>
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
   `;
 }
@@ -155,7 +192,7 @@ window.editPerson = (personId) => {
             getElement("#studentId").disabled = true;
             getElement(".label-student").innerHTML = "EDIT STUDENT";
             getElement("#modal-footer-S").innerHTML = `
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateStudent('${person.id}')">Cập nhật</button>
+        <button type="button" class="btn btn-primary"  onclick="updateStudent('${person.id}')">Cập nhật</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
       `;
             $("#exampleModalStudent").modal("show");
@@ -171,7 +208,7 @@ window.editPerson = (personId) => {
             getElement("#teacherId").disabled = true;
             getElement(".label-teacher").innerHTML = "EDIT Teacher";
             getElement("#modal-footer-T").innerHTML = `
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateTeacher('${person.id}')">Cập nhật</button>
+            <button type="button" class="btn btn-primary"  onclick="updateTeacher('${person.id}')">Cập nhật</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
           `;
             $("#exampleModalTeacher").modal("show");
@@ -188,7 +225,7 @@ window.editPerson = (personId) => {
             getElement("#customerId").disabled = true;
             getElement(".label-customer").innerHTML = "EDIT CUSTOMER";
             getElement("#modal-footer-C").innerHTML = `
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateCustomer('${person.id}')">Cập nhật</button>
+            <button type="button" class="btn btn-primary"  onclick="updateCustomer('${person.id}')">Cập nhật</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
           `;
             $("#exampleModalCustomer").modal("show");
@@ -205,15 +242,24 @@ window.updateStudent = () => {
     let math = Number(getElement("#math").value);
     let physics = Number(getElement("#physics").value);
     let chemistry = Number(getElement("#chemistry").value);
-    const student = new Student(id, name, address, email, Number(math), Number(physics), Number(chemistry));
-    student.calculateAverage;
-    let index = personList.findIndex((student) => {
-        return student.id === id;
-    });
-    personList[index] = student;
-    renderPerson(personList);
-    setLocalStorage();
-    resetStudent();
+
+    let isValid = true;
+    isValid &= Validation.checkEmpty(name, "tbNameStudent", "Thông tin không được để trống!") && Validation.checkName(name, "tbNameStudent", "Thông tin không hợp lệ!");
+    isValid &= Validation.checkEmpty(address, "tbAdressStudent", "Thông tin không được để trống!");
+    isValid &= Validation.checkEmpty(email, "tbMailStudent", "Thông tin không được để trống!") && Validation.checkEmail(email, "tbMailStudent", "Thông tin email chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(math, "tbMathStudent", "Thông tin không được để trống!") && Validation.checkScore(math, "tbMathStudent", "Điểm chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(physics, "tbPhysicsStudent", "Thông tin không được để trống!") && Validation.checkScore(physics, "tbPhysicsStudent", "Điểm chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(chemistry, "tbChemistryStudent", "Thông tin không được để trống!") && Validation.checkScore(chemistry, "tbChemistryStudent", "Điểm chưa hợp lệ!");
+
+    if (isValid) {
+        const student = new Student(id, name, address, email, Number(math), Number(physics), Number(chemistry));
+        personList.push(student);
+        setLocalStorage();
+        renderPerson(personList);
+        resetStudent();
+        alert("Cập Nhập Thành Công");
+        document.querySelector("#exampleModalStudent .btn-close").click();
+    }
 }
 
 window.updateTeacher = () => {
@@ -223,14 +269,23 @@ window.updateTeacher = () => {
     let email = getElement("#teacherEmail").value;
     let days = Number(getElement("#days").value);
     let salaryUnit = Number(getElement("#salaryUnit").value);
-    const teacher = new Teacher(id, name, address, email, Number(days), Number(salaryUnit));
-    let index = personList.findIndex((teacher) => {
-        return teacher.id === id;
-    });
-    personList[index] = teacher;
-    renderPerson(personList);
-    setLocalStorage();
-    resetTeacher()
+    let isValid = true;
+
+    isValid &= Validation.checkEmpty(name, "tbNameTeacher", "Thông tin không được để trống!") && Validation.checkName(name, "tbNameTeacher", "Thông tin không hợp lệ!");
+    isValid &= Validation.checkEmpty(address, "tbAdressTeacher", "Thông tin không được để trống!");
+    isValid &= Validation.checkEmpty(email, "tbMailTeacher", "Thông tin không được để trống!") && Validation.checkEmail(email, "tbMailTeacher", "Thông tin email chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(days, "tbDays", "Thông tin không được để trống!") && Validation.checkDays(days, "tbDays", "Ngày chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(salaryUnit, "tbSalaryUnit", "Thông tin không được để trống!") && Validation.checkDailySalary(salaryUnit, "tbSalaryUnit", "Lương chưa chưa hợp lệ!");
+
+    if (isValid) {
+        const teacher = new Teacher(id, name, address, email, Number(days), Number(salaryUnit));
+        personList.push(teacher);
+        setLocalStorage();
+        renderPerson(personList);
+        resetTeacher();
+        alert("Cập Nhập Thành Công");
+        document.querySelector("#exampleModalTeacher .btn-close").click();
+    }
 }
 
 window.updateCustomer = () => {
@@ -254,14 +309,24 @@ window.updateCustomer = () => {
             rate = "Choose";
         }
     }
-    const customer = new Customer(id, name, address, email, company, bill, rate);
-    let index = personList.findIndex((customer) => {
-        return customer.id === id;
-    });
-    personList[index] = customer;
-    renderPerson(personList);
-    setLocalStorage();
-    resetCustomer();
+    let isValid = true;
+
+    isValid &= Validation.checkEmpty(name, "tbNameCustomer", "Thông tin không được để trống!") && Validation.checkName(name, "tbNameCustomer", "Thông tin không hợp lệ!");
+    isValid &= Validation.checkEmpty(address, "tbAdressCustomer", "Thông tin không được để trống!");
+    isValid &= Validation.checkEmpty(email, "tbMailCustomer", "Thông tin không được để trống!") && Validation.checkEmail(email, "tbMailCustomer", "Thông tin email chưa hợp lệ!");
+    isValid &= Validation.checkEmpty(company, "tbCompanyName", "Thông tin không được để trống!");
+    isValid &= Validation.checkEmpty(bill, "tbBill", "Thông tin không được để trống!") && Validation.checkBill(bill, "tbBill", "Giá trị chưa chưa hợp lệ!");
+    isValid &= Validation.checkSelect("inputRate", "tbRate", "Thông tin chưa hợp lệ!");
+
+    if (isValid) {
+        const customer = new Customer(id, name, address, email, company, bill, rate);
+        personList.push(customer);
+        setLocalStorage();
+        renderPerson(personList);
+        resetTeacher();
+        alert("Cập Nhập Thành Công");
+        document.querySelector("#exampleModalCustomer .btn-close").click();
+    }
 }
 
 // tạo hàm sắp xếp 
@@ -345,7 +410,7 @@ const filterPerson = (userType) => {
 
 const userTypeSelect = getElement("#typePerson");
 
-userTypeSelect.onchange = () => {
+userTypeSelect.onclick = () => {
     const userType = userTypeSelect.value;
     const filteredList = filterPerson(userType);
     renderPerson(filteredList);
